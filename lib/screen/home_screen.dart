@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:musika/model/paint_model.dart';
-import 'package:musika/widget/carousel_slider.dart';
-import 'package:musika/widget/recently_slider.dart';
+import 'package:Ai_pict/model/paint_model.dart';
+import 'package:Ai_pict/widget/carousel_slider.dart';
+import 'package:Ai_pict/widget/recently_slider.dart';
 
 
 FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-  List<Paint> paints = [];
+  List<Paint_m> paints = [];
 
   Widget _fetchData(BuildContext context){
     return StreamBuilder<QuerySnapshot>(
@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot){
-    List<Paint> paints = snapshot.map((m)=> Paint.fromSnapshot(m)).toList();
+    List<Paint_m> paints = snapshot.map((m)=> Paint_m.fromSnapshot(m)).toList();
     return SingleChildScrollView(
       child: Column(
           children: [

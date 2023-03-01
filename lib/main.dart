@@ -3,24 +3,146 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:musika/screen/home_screen.dart';
-import 'package:musika/screen/login_screen.dart';
-import 'package:musika/screen/more_screen.dart';
-import 'package:musika/screen/search_screen.dart';
-import 'package:musika/screen/upload_screen.dart';
-import 'package:musika/widget/bottom_bar.dart';
+import 'package:Ai_pict/screen/home_screen.dart';
+import 'package:Ai_pict/screen/login_screen.dart';
+import 'package:Ai_pict/screen/more_screen.dart';
+import 'package:Ai_pict/screen/search_screen.dart';
+import 'package:Ai_pict/screen/upload_screen.dart';
+import 'package:Ai_pict/widget/bottom_bar.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 FirebaseFirestore firestore = FirebaseFirestore.instance;
 FirebaseAuth _auth = FirebaseAuth.instance;
+
 String uid = "";
 String username = "";
+String userToken="";
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
 
-void main() async {
+  //파이어베이스 메시지 설정
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  // Android 알림 채널 설정
+  AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'channel_id', // id
+    'channel_name', // name
+    description: 'channel_description', // description
+    importance: Importance.max, // importance
+    playSound: true,
+  );
+
+  //설정한 채널을 널어서 NotificationPlugin 작성
+  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
+
+  print("Handling a background message: ${message.notification}");
+  if (message.notification != null) {
+    print('Message also contained a notification: ${message.notification!.body}');
+
+    flutterLocalNotificationsPlugin.show(
+        message.hashCode,
+        message.notification?.title,
+        message.notification?.body,
+
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id,
+            channel.name,
+            channelDescription:channel.description,
+            importance: Importance.high,
+            icon: '@mipmap/ic_launcher',
+
+          ),
+          /*iOS: const IOSNotificationDetails(
+                badgeNumber: 1,
+                subtitle: 'the subtitle',
+                sound: 'slow_spring_board.aiff',
+              )*/
+        )
+    );
+  }
+}
+
+Future<String?> getUserToken() async {
+  var fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "BNZniSDCR04atJgpU2IzjfejWr6Ydwwd5ZXFabwpMtDz9djwdAcGyw_iM_hP3xHdcE2l6Do1KIfb9vdpP7TVGGw");
+  //print('fcmToken :: $fcmToken');
+
+  //이미 등록된 토큰인지 확인하기
+  var userTokens = await FirebaseFirestore.instance.collection('tokens').where('token',isEqualTo: fcmToken).get();
+
+  if (userTokens.docs.isNotEmpty) {
+    print('해당 사용자 토큰이 존재합니다.');
+  } else {
+    print('해당 사용자 토큰이 존재하지 않습니다.');
+
+    FirebaseFirestore.instance.collection('tokens').doc().set(
+      { 'token' : fcmToken }
+    );
+    print('새로운 이용자의 토큰이 등록되었습니다.');
+  }
+  return fcmToken;
+}
+
+Future<void> main() async {
   //FlutterBinding 초기화
   WidgetsFlutterBinding.ensureInitialized();
   //FireBase초기화
   await Firebase.initializeApp();
+
+  //파이어베이스 메시지 설정
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  // Android 알림 채널 설정
+  AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'channel_id', // id
+      'channel_name', // name
+      description: 'channel_description', // description
+      importance: Importance.high, // importance
+      playSound: true,
+  );
+
+  //설정한 채널을 널어서 NotificationPlugin 작성
+  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
+
+  //백그라운드 처리
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Got a message whilst in the foreground!');
+    print('Message data: ${message.notification!.body}');
+
+    if (message.notification != null) {
+      print('Message also contained a notification: ${message.notification!.body}');
+
+      flutterLocalNotificationsPlugin.show(
+          message.hashCode,
+          message.notification?.title,
+          message.notification?.body,
+
+          NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                channelDescription:channel.description,
+                importance: Importance.high,
+                icon: '@mipmap/ic_launcher',
+
+              ),
+              /*iOS: const IOSNotificationDetails(
+                badgeNumber: 1,
+                subtitle: 'the subtitle',
+                sound: 'slow_spring_board.aiff',
+              )*/
+          )
+      );
+    }
+  });
+
+  //App 시작
   runApp(MyApp());
 }
 
@@ -36,7 +158,9 @@ class _MyAppState extends State<MyApp> {
       uid = _auth.currentUser!.uid;
       getUserInfo();
     }
+    //유저의 토큰등록 여부를 판단후 없으면 등록
     super.initState();
+    getUserToken();
   }
 
   Future<void> getUserInfo() async {
@@ -59,6 +183,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'Ai_pict',
       theme: ThemeData(primaryColor: Colors.black, brightness: Brightness.dark),

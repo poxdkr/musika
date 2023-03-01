@@ -4,11 +4,12 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:musika/model/paint_model.dart';
-import 'package:musika/screen/detail_screen.dart';
+import 'package:Ai_pict/model/paint_model.dart';
+import 'package:Ai_pict/screen/detail_screen.dart';
 
 String sst = "regdate"; //기본 정렬 등록일자 내림순
 bool isDesc = true;
+List<Paint_m> plist=[];
 
 class SearchScreen extends StatefulWidget {
 
@@ -18,10 +19,16 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
 
+  @override
+  void initState() {
+    super.initState();
+
+  }
   TextEditingController _controller = TextEditingController();
 
   FocusNode focusNode = FocusNode();
   String _searchText = "";
+
 
   _SearchScreenState(){
     _controller.addListener(() {
@@ -49,26 +56,39 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot){
     List<DocumentSnapshot> searchResult = [];
+    plist =[];
     for(DocumentSnapshot d in snapshot){
       if(d.data().toString().toLowerCase().contains(_searchText)){
         searchResult.add(d);
+        final p_one = Paint_m.fromSnapshot(d);
+        plist.add(p_one);
       }
     }
+
+    print(plist.length);
 
     return Expanded(
         child: GridView.count(
             crossAxisCount: 3,
             childAspectRatio: 1 / 1.5,
             padding: EdgeInsets.all(5),
-            children: searchResult
+            children: /*searchResult
                 .map((data) => _buildListItem(context ,data))
+                .toList()*/
+            searchResult
+                .asMap()
+                .map((index, data) => MapEntry(
+                index,
+                _buildListItem(context, data, index,searchResult)))
+                .values
                 .toList()
         )
     );
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data){
-    final paint = Paint.fromSnapshot(data);
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data, int index, List<DocumentSnapshot<Object?>> searchResult){
+    final paint = Paint_m.fromSnapshot(data);
+
     return InkWell(
       child: Container(
         padding : EdgeInsets.all(3),
@@ -94,7 +114,7 @@ class _SearchScreenState extends State<SearchScreen> {
             MaterialPageRoute(
               fullscreenDialog: true,
               builder: (context) {
-                return DetailScreen(paint: paint);
+                return DetailScreen(pindex : index, paint: paint, paints:plist);
               },
             )
         );
@@ -104,6 +124,8 @@ class _SearchScreenState extends State<SearchScreen> {
   //build 함수
   @override
   Widget build(BuildContext context) {
+
+
     return Container(
       child: Column(
         children: [

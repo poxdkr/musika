@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:musika/model/music_model.dart';
-import 'package:musika/model/paint_model.dart';
+import 'package:Ai_pict/model/music_model.dart';
+import 'package:Ai_pict/model/paint_model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:musika/screen/detail_screen.dart';
+import 'package:Ai_pict/screen/detail_screen.dart';
 
 final firebaseStorage = FirebaseStorage.instance;
 late String imageUrl;
 
 class RecentlySlider extends StatefulWidget {
-  final List<Paint> paints;
+
+  final List<Paint_m> paints;
+
   RecentlySlider({required this.paints});
+
   @override
   State<RecentlySlider> createState() => _RecentlySliderState();
 }
@@ -38,7 +41,7 @@ class _RecentlySliderState extends State<RecentlySlider> {
   }
 }
 
-List<Widget> makeImages(BuildContext context, List<Paint> paints){
+List<Widget> makeImages(BuildContext context, List<Paint_m> paints){
   List<Widget> results = [];
   for(var i=0; i<paints.length; i++){
     results.add(
@@ -50,7 +53,7 @@ List<Widget> makeImages(BuildContext context, List<Paint> paints){
                 MaterialPageRoute(
                   fullscreenDialog: true,
                   builder: (context) {
-                    return DetailScreen(paint: paints[i]);
+                    return DetailScreen(pindex:i,paint: paints[i], paints: paints);
                   },
                 )
             );

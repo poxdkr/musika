@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:musika/main.dart';
-import 'package:musika/screen/login_screen.dart';
-import 'package:musika/widget/recently_slider.dart';
+import 'package:Ai_pict/main.dart';
+import 'package:Ai_pict/screen/login_screen.dart';
+import 'package:Ai_pict/widget/recently_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 FirebaseFirestore firestore = FirebaseFirestore.instance;

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Paint {
+class Paint_m {
   final String code;
   final String cate;
   final bool isA;
@@ -10,7 +10,7 @@ class Paint {
   final String regdate;
   final DocumentReference reference;
 
-  Paint.fromMap(Map<dynamic, dynamic> map,{required this.reference})
+  Paint_m.fromMap(Map<dynamic, dynamic> map,{required this.reference})
       : code = map['code'],
         cate = map['cate'],
         isA = map['isA'],
@@ -19,7 +19,7 @@ class Paint {
         like_cnt = map['like_cnt'],
         regdate = map['regdate'];
 
-  Paint.fromSnapshot(DocumentSnapshot snapshot)
+  Paint_m.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data() as Map<dynamic,dynamic> , reference : snapshot.reference);
 
   //Json

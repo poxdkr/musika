@@ -4,6 +4,7 @@ class Assets {
 
   static const String imageIcon = 'image/icon.png';
   static const String imageMain = 'image/main.png';
+  static const String imageMainIcon = 'image/main_icon.png';
   static const String imageMusikaIcon = 'image/musika_icon.png';
   static const String musikaImageMain = 'image/main.png';
 

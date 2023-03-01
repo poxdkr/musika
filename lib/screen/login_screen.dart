@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:musika/main.dart';
+import 'package:Ai_pict/main.dart';
 import 'package:blurry_modal_progress_hud/blurry_modal_progress_hud.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool showSpinner = false;
 
   //Sign up 화면인지 확인
-  bool isSignupScreen = true;
+  bool isSignupScreen = false;
 
   //form을 지정할 formkey
   final _formKey = GlobalKey<FormState>();

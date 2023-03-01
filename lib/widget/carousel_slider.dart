@@ -1,12 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:musika/model/paint_model.dart';
-import 'package:musika/screen/detail_screen.dart';
+import 'package:Ai_pict/model/paint_model.dart';
+import 'package:Ai_pict/screen/detail_screen.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 
 class CarouselImage extends StatefulWidget {
 
-  final List<Paint> paints;
+  final List<Paint_m> paints;
 
   CarouselImage({required this.paints});
 
@@ -16,7 +16,7 @@ class CarouselImage extends StatefulWidget {
 
 class _CarouselImageState extends State<CarouselImage> {
 
-  List<Paint>? paints;
+  List<Paint_m>? paints;
   List<Widget>? pSquares;
   List<Container> pSquares_1 = [];
   List<String>? codes;
@@ -27,17 +27,18 @@ class _CarouselImageState extends State<CarouselImage> {
   List<String>? regdates;
 
   int _currentPage = 0;
-  Paint? _currentPaint;
+  Paint_m? _currentPaint;
 
   @override
   void initState() {
     super.initState();
     paints = widget.paints;
-
+    List<Paint_m> pList = paints!;
     List<Widget> results = [];
     List<Container> results_11 = [];
 
-      for (Paint p in paints!) {
+    int index = 0;
+      for (var i =0; i<paints!.length; i++) {
         Container square = Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(
@@ -49,14 +50,14 @@ class _CarouselImageState extends State<CarouselImage> {
                   MaterialPageRoute(
                     fullscreenDialog: true,
                     builder: (context) {
-                      return DetailScreen(paint: p);
+                      return DetailScreen(pindex : i, paint: paints![i], paints: pList!,);
                     },
                   )
               );
             },
             child: Container(
               child: Image.network(
-                p.p_file,
+                paints![i].p_file,
                 fit: BoxFit.cover,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null)
@@ -77,7 +78,11 @@ class _CarouselImageState extends State<CarouselImage> {
           ),
         );
         results_11.add(square);
+        index++;
       }
+
+      results_11 = results_11.reversed.toList();
+
 
       pSquares_1 = results_11;
       codes = paints?.map((m) => m.code).toList();
@@ -108,19 +113,6 @@ class _CarouselImageState extends State<CarouselImage> {
               ],
             )
           ),
-          /*CarouselSlider(
-              items: pSquares,
-              options: CarouselOptions(
-                autoPlay: true,
-                autoPlayAnimationDuration: Duration(seconds: 1),
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _currentPage = index;
-                    _currentPaint = paints?[_currentPage];
-                  });
-                },
-              )
-          ),*/
           Flexible(
               child: CardSwiper(
                 cards: pSquares_1,
