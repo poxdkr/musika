@@ -41,7 +41,6 @@ class _SearchScreenState extends State<SearchScreen> {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('paint')
                                         .orderBy(sst, descending: isDesc)
-                                        .limit(200)
                                         .snapshots(),
       builder: (context, snapshot){
         if(!snapshot.hasData){
