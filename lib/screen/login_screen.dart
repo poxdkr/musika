@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       image : DecorationImage(
                           image: AssetImage('image/main.png'),
                           fit : BoxFit.cover,
-                          opacity: 0.5,
+                          opacity: 0.3,
                           filterQuality: FilterQuality.low
                       ),
                     color: Colors.white60
@@ -131,10 +131,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   curve : Curves.easeIn,
                   width : MediaQuery.of(context).size.width-40,
                   margin : EdgeInsets.symmetric(horizontal: 20), padding : EdgeInsets.all(20),
-                  height : isSignupScreen ? 420 : 370,
+                  height : isSignupScreen ? 480 : 430,
                   decoration:
                   BoxDecoration(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withOpacity(0.6),
                     borderRadius: BorderRadius.circular(15.0),
                     boxShadow:[
                       BoxShadow(
@@ -144,52 +144,40 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
-                  child : SingleChildScrollView(
-                    padding : EdgeInsets.only(bottom:20),
                     child: Column(
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             //로그인 탭
-                            GestureDetector(
-                              onTap: (){
-                                setState(() {
-                                  isSignupScreen = false;
-                                });
-                              },
-                              child: Column(
-                                children: [
-                                  Text('LOGIN',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color : isSignupScreen ? Colors.grey : Colors.redAccent.shade700,
+                                Column(
+                                  children: [
+                                    TextButton(
+                                        child: Text('Login', style: TextStyle(fontSize: 18, color : isSignupScreen ? Colors.grey : Colors.redAccent.shade700,)),
+                                        onPressed: (){
+                                          setState(() {
+                                            isSignupScreen = false;
+                                          });
+                                        },
+                                        ),
+                                    if(!isSignupScreen)
+                                      Container(
+                                        margin : EdgeInsets.only(top:3),
+                                        height : 2,
+                                        width : 55,
+                                        color : Colors.redAccent.shade700,
                                       )
-                                  ),
-                                  if(!isSignupScreen)
-                                    Container(
-                                      margin : EdgeInsets.only(top:3),
-                                      height : 2,
-                                      width : 55,
-                                      color : Colors.redAccent.shade700,
-                                    )
-                                ],
-                              ),
-                            ),
-                            //사인업 탭
-                            GestureDetector(
-                              onTap: (){
-                                setState(() {
-                                  isSignupScreen = true;
-                                });
-                              },
-                              child: Column(
+                                  ],
+                                ),
+                            Column(
                                 children: [
-                                  Text('SIGN UP',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color : isSignupScreen ?  Colors.redAccent.shade700 : Colors.grey ,
-                                      )
+                                  TextButton(
+                                    child: Text('Sign up', style: TextStyle(fontSize: 18, color : !isSignupScreen ? Colors.grey : Colors.redAccent.shade700,)),
+                                    onPressed: (){
+                                      setState(() {
+                                        isSignupScreen = true;
+                                      });
+                                    },
                                   ),
                                   if(isSignupScreen)
                                     Container(
@@ -200,114 +188,114 @@ class _LoginScreenState extends State<LoginScreen> {
                                     )
                                 ],
                               ),
-                            ),
                           ],
                         ),
+
                         //Login 메뉴 텍스트폼
                         if(!isSignupScreen)
                           Container(
-                            margin: EdgeInsets.only(top:20),
-                            child: Form(
-                              key : _formKey,
-                              child: Column(
-                                children: [
-                                  TextFormField(
-                                    keyboardType: TextInputType.emailAddress,
-                                    style: TextStyle(color : Colors.blueGrey, fontWeight: FontWeight.bold),
-                                    key : ValueKey(1),
-                                    validator: (value){
-                                      if(value!.isEmpty || value!.length <5){
-                                        return 'you neeto input more than 5 Characters!';
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value){
-                                      userMail = value!;
-                                    },
-                                    onChanged: (value){
-                                      userMail = value;
-                                    },
-                                    decoration: InputDecoration(
-                                      prefixIcon: Icon(Icons.alternate_email,
-                                          color : Colors.redAccent.shade700
+                            margin: EdgeInsets.only(top:8),
+                              child: Form(
+                                key : _formKey,
+                                child: Column(
+                                  children: [
+                                    TextFormField(
+                                      keyboardType: TextInputType.emailAddress,
+                                      style: TextStyle(color : Colors.blueGrey, fontWeight: FontWeight.bold),
+                                      key : ValueKey(1),
+                                      validator: (value){
+                                        if(value!.isEmpty || value!.length <5){
+                                          return 'you neeto input more than 5 Characters!';
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (value){
+                                        userMail = value!;
+                                      },
+                                      onChanged: (value){
+                                        userMail = value;
+                                      },
+                                      decoration: InputDecoration(
+                                        prefixIcon: Icon(Icons.alternate_email,
+                                            color : Colors.redAccent.shade700
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color : Colors.redAccent.shade700,
+                                            ),
+                                            borderRadius:BorderRadius.all(
+                                              Radius.circular(35),
+                                            )
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color : Colors.redAccent.shade700,
+                                            ),
+                                            borderRadius:BorderRadius.all(
+                                              Radius.circular(35),
+                                            )
+                                        ),
+                                        hintText: 'E-Mail Address',
+                                        hintStyle: TextStyle(
+                                          color : Colors.redAccent.shade700,
+                                          fontSize: 14,
+                                        ),
+                                        contentPadding: EdgeInsets.all(10),
                                       ),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color : Colors.redAccent.shade700,
-                                          ),
-                                          borderRadius:BorderRadius.all(
-                                            Radius.circular(35),
-                                          )
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color : Colors.redAccent.shade700,
-                                          ),
-                                          borderRadius:BorderRadius.all(
-                                            Radius.circular(35),
-                                          )
-                                      ),
-                                      hintText: 'E-Mail Address',
-                                      hintStyle: TextStyle(
-                                        color : Colors.redAccent.shade700,
-                                        fontSize: 14,
-                                      ),
-                                      contentPadding: EdgeInsets.all(10),
                                     ),
-                                  ),
-                                  SizedBox(height:8),
-                                  TextFormField(
-                                    style: TextStyle(color : Colors.blueGrey, fontWeight: FontWeight.bold),
-                                    key : ValueKey(2),
-                                    obscureText: true,
-                                    validator: (value){
-                                      if(value!.isEmpty || value!.length < 5 ){
-                                        return "you need to input more than 6 Characters";
-                                      }
-                                      return null;
-                                    },
-                                    onSaved:(value){
-                                      userPassword=value!;
-                                    },
-                                    onChanged: (value){
-                                      userPassword = value;
-                                    },
-                                    decoration: InputDecoration(
-                                      prefixIcon: Icon(Icons.lock,
-                                          color : Colors.redAccent.shade700
+                                    SizedBox(height:8),
+                                    TextFormField(
+                                      style: TextStyle(color : Colors.blueGrey, fontWeight: FontWeight.bold),
+                                      key : ValueKey(2),
+                                      obscureText: true,
+                                      validator: (value){
+                                        if(value!.isEmpty || value!.length < 5 ){
+                                          return "you need to input more than 6 Characters";
+                                        }
+                                        return null;
+                                      },
+                                      onSaved:(value){
+                                        userPassword=value!;
+                                      },
+                                      onChanged: (value){
+                                        userPassword = value;
+                                      },
+                                      decoration: InputDecoration(
+                                        prefixIcon: Icon(Icons.lock,
+                                            color : Colors.redAccent.shade700
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color : Colors.redAccent.shade700,
+                                            ),
+                                            borderRadius:BorderRadius.all(
+                                              Radius.circular(35),
+                                            )
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color : Colors.redAccent.shade700,
+                                            ),
+                                            borderRadius:BorderRadius.all(
+                                              Radius.circular(35),
+                                            )
+                                        ),
+                                        hintText: 'Password',
+                                        hintStyle: TextStyle(
+                                          color : Colors.redAccent.shade700,
+                                          fontSize: 14,
+                                        ),
+                                        contentPadding: EdgeInsets.all(10),
                                       ),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color : Colors.redAccent.shade700,
-                                          ),
-                                          borderRadius:BorderRadius.all(
-                                            Radius.circular(35),
-                                          )
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color : Colors.redAccent.shade700,
-                                          ),
-                                          borderRadius:BorderRadius.all(
-                                            Radius.circular(35),
-                                          )
-                                      ),
-                                      hintText: 'Password',
-                                      hintStyle: TextStyle(
-                                        color : Colors.redAccent.shade700,
-                                        fontSize: 14,
-                                      ),
-                                      contentPadding: EdgeInsets.all(10),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
                           ),
                         //Sign up 메뉴 텍스트폼
                         if(isSignupScreen)
                           Container(
-                            margin: EdgeInsets.only(top:20),
+                            margin: EdgeInsets.only(top:8),
                             child: Form(
                               key : _formKey,
                               child: Column(
@@ -457,20 +445,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           )
                       ],
                     ),
-                  )
               ),
             ),
             //Submit Btn 포지션
             AnimatedPositioned(
               duration : Duration(milliseconds: 300),
               curve : Curves.easeIn,
-              top : isSignupScreen ? 460 : 410,
+              top : isSignupScreen ? 500 : 450,
               right : 0,
               left :0,
               child: Center(
                   child: Container(
-                    padding : EdgeInsets.all(15),
-                    height : 70,
+                    height : 56,
                     width : 200,
                     decoration: BoxDecoration(
                         color : Colors.transparent,
@@ -572,11 +558,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           child : Text(
                             !isSignupScreen
-                            ?'Login'
-                            :'SignUp',
+                            ?'LOGIN'
+                            :'SIGN UP',
                             style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w500,
                                     shadows: [Shadow(
                                       color: Colors.white38,
                                       offset: Offset(0,1)
@@ -592,7 +578,7 @@ class _LoginScreenState extends State<LoginScreen> {
             //without Login 포지션
             AnimatedPositioned(
                 curve : Curves.easeIn,
-                top : isSignupScreen ? 540 : 490,
+                top : isSignupScreen ? 570 : 520,
                 right : 0,
                 left :0,
                 duration: Duration(milliseconds: 300),
@@ -614,7 +600,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         border: Border.all(color: Colors.redAccent.shade700)
                       ),
-                      height : 30,
+                      height : 50,
                       width : 200,
                       child: Text('Go without Login',
                         style: TextStyle(

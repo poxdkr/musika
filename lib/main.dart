@@ -186,11 +186,11 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       title: 'Ai_pict',
-      theme: ThemeData(primaryColor: Colors.black, brightness: Brightness.dark),
+      theme: ThemeData(primaryColor: Colors.black, brightness: Brightness.dark,fontFamily: 'NotoSans',),
       home :AnimatedSplashScreen(
           splashIconSize: 300,
           curve: Curves.bounceIn,
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.black.withOpacity(0.5),
         splash : Container(
           width : 300,
           decoration: BoxDecoration(

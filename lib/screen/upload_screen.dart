@@ -74,7 +74,7 @@ class _UploadScreenState extends State<UploadScreen> {
   //이미지 압축
   Future<File> compressAndGetFile(File file, String targetPath) async {
     var image = Img.decodeImage(file.readAsBytesSync());
-    var compressedImage = Img.encodeJpg(image!, quality: 50);
+    var compressedImage = Img.encodeJpg(image!, quality: 75);
     return File(targetPath)..writeAsBytesSync(compressedImage);
   }
 

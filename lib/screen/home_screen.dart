@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:Ai_pict/model/paint_model.dart';
 import 'package:Ai_pict/widget/carousel_slider.dart';
 import 'package:Ai_pict/widget/recently_slider.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 
 FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -32,7 +33,11 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, snapshot){
         if(!snapshot.hasData){
           print('loading.......');
-          return LinearProgressIndicator();
+          return SpinKitRotatingCircle(
+                  color: Colors.redAccent.shade400,
+                  size: 150.0,
+                  duration: Duration(milliseconds: 500),
+                );
         }else{
           return _buildBody(context,snapshot.data!.docs);
         }

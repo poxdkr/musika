@@ -362,14 +362,14 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                           ),
                           Positioned(
                             child: AppBar(
-                              backgroundColor: Colors.transparent,
+                              backgroundColor: Colors.black.withOpacity(0.5),
                               elevation: 0,
                               actions: [
                                 SizedBox(height: 10,),
                                 // 상단 툴바
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.1),
+                                    color: Colors.transparent,
                                     borderRadius: BorderRadius.circular(10)
                                   ),
                                   child: Row(
@@ -377,80 +377,87 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                                     children: [
                                       //좋아요 버튼
                                       Container(
-                                        padding : EdgeInsets.fromLTRB(20, 5, 20, 5),
-                                        child: InkWell(
-                                          onTap: (){
-                                            if(!isUser){
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                    duration: Duration(milliseconds: 300),
-                                                    content: Text(
+                                        padding : EdgeInsets.fromLTRB(5, 5, 0, 5),
+                                          child:ElevatedButton(
+                                            style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent,elevation: 0),
+                                            onPressed: (){
+                                              if(!isUser){
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                    SnackBar(
+                                                      duration: Duration(milliseconds: 300),
+                                                      content: Text(
                                                         '좋아요는 로그인이 필요합니다',
                                                         style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontWeight: FontWeight.bold
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.bold
                                                         ),
-                                                    ),
-                                                    backgroundColor: Colors.redAccent.shade200,
-                                                )
-                                              );
-                                              return null;
-                                            }
-                                            setState((){
-                                              like = !like;
+                                                      ),
+                                                      backgroundColor: Colors.redAccent.shade200,
+                                                    )
+                                                );
+                                                return null;
+                                              }
+                                              setState((){
+                                                like = !like;
 
-                                              if(like) {
+                                                if(like) {
                                                   like_cnt++;
                                                   widget.paint.reference.update(
                                                       {"like_cnt" : like_cnt}
                                                   );
                                                   likeEdit(like);
-                                              }else{
+                                                }else{
                                                   like_cnt--;
                                                   widget.paint.reference.update(
                                                       {"like_cnt" : like_cnt}
                                                   );
                                                   likeEdit(like);
-                                              }
-                                              /*print(like);
+                                                }
+                                                /*print(like);
                                               print(like_cnt);*/
-                                            });
-                                          },
-                                          child:Row(
-                                            children: [
-                                              Icon(
-                                                  like
-                                                      ? Icons.thumb_up
-                                                      : Icons.thumb_up_alt_outlined,
-                                                  color:
-                                                  like
-                                                    ? Colors.redAccent.shade400
-                                                    : Colors.white,
+                                              });
+                                            },
+                                            child: Container(
+                                              height: 48,
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                      like
+                                                          ? Icons.thumb_up
+                                                          : Icons.thumb_up_alt_outlined,
+                                                      color:
+                                                      like
+                                                        ? Colors.redAccent.shade400
+                                                        : Colors.white,
+                                                  ),
+                                                  SizedBox(width: 10,),
+                                                  Text(
+                                                    (like_cnt).toString(),
+                                                   style: TextStyle(
+                                                     color:
+                                                       like
+                                                           ? Colors.redAccent.shade400
+                                                           : Colors.white,
+                                                     fontWeight: FontWeight.bold
+                                                   ),
+                                                  ),
+                                                ],
                                               ),
-                                              SizedBox(width: 10,),
-                                              Text(
-                                                (like_cnt).toString(),
-                                               style: TextStyle(
-                                                 color:
-                                                   like
-                                                       ? Colors.redAccent.shade400
-                                                       : Colors.white,
-                                                 fontWeight: FontWeight.bold
-                                               ),
-                                              ),
-                                            ],
+                                            ),
                                           ),
-                                        ),
+
                                       ),
                                       //다운로드 버튼
+
                                       Container(
-                                        padding : EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                        child: InkWell(
-                                          onTap: (){
+                                        padding : EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                         child : ElevatedButton(
+                                          style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent,elevation: 0),
+                                          onPressed: (){
                                             if(!isUser){
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                   SnackBar(
-                                                    duration: Duration(milliseconds: 300),
+                                                    duration: Duration(milliseconds: 700),
                                                     content: Text(
                                                       '다운로드는 회원가입이 필요합니다',
                                                       style: TextStyle(
@@ -467,7 +474,7 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                                             downloadFile(widget.paint.p_file);
                                             ScaffoldMessenger.of(context).showSnackBar(
                                                 SnackBar(
-                                                  duration: Duration(milliseconds: 300),
+                                                  duration: Duration(milliseconds: 500),
                                                   content: Text(
                                                     '이미지를 다운로드 합니다.',
                                                     style: TextStyle(
@@ -485,13 +492,13 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                                       ),
                                       //공유하기 버튼
                                       Container(
-                                        padding : EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                        child: InkWell(
-                                          onTap: (){
-
+                                        padding : EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                        child : ElevatedButton(
+                                          style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent,elevation: 0),
+                                          onPressed: (){
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                   SnackBar(
-                                                    duration: Duration(milliseconds: 300),
+                                                    duration: Duration(milliseconds: 500),
                                                     content: Text(
                                                       '공유하기는 개발중입니다.',
                                                       style: TextStyle(
