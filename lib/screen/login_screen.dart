@@ -68,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: Colors.white60
                   ),
                   padding : EdgeInsets.only(top:90,left:20),
-                  height : 1000,
+                  height : MediaQuery.of(context).size.height,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

@@ -423,8 +423,8 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                                                 children: [
                                                   Icon(
                                                       like
-                                                          ? Icons.thumb_up
-                                                          : Icons.thumb_up_alt_outlined,
+                                                          ? Icons.favorite
+                                                          : Icons.favorite_border_outlined,
                                                       color:
                                                       like
                                                         ? Colors.redAccent.shade400

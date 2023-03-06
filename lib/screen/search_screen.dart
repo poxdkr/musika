@@ -90,22 +90,63 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return InkWell(
       child: Container(
-        padding : EdgeInsets.all(3),
-        child: Image.network(
-          paint.p_file,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) {
-              return child;
-            }
-            return Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent.withOpacity(0.5)),
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                    : null,
+        padding: EdgeInsets.all(4),
+        child: Stack(
+            children: [
+              Positioned(
+                child: Image.network(
+                paint.p_file,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent.withOpacity(0.5)),
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                          : null,
+                    ),
+                  );
+                },
+            ),
               ),
-            );
-          },
+              Positioned(
+                left:0,
+                right:0,
+                bottom: 0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color : Colors.redAccent.withOpacity(0.5),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                          padding : EdgeInsets.all(3),
+                          child: Row(
+                              children : [
+                                Icon(Icons.favorite,size: 15),
+                                SizedBox(width: 10),
+                                Text(paint.like_cnt.toString(),style: TextStyle(fontSize: 13),)
+                              ]
+                          )
+                      ),
+                      /*Container(
+                          padding : EdgeInsets.all(5),
+                          child: Row(
+                              children : [
+                                Icon(Icons.comment),
+                                Text('11')
+                              ]
+                          )
+                      ),*/
+                    ],
+                  ),
+                ),
+              )
+          ]
         ),
       ),
       onTap: (){

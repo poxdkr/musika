@@ -97,7 +97,7 @@ class _CarouselImageState extends State<CarouselImage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 500,
+      height: MediaQuery.of(context).size.height*0.7,
       child : Column(
         children: [
           Container(
@@ -115,6 +115,7 @@ class _CarouselImageState extends State<CarouselImage> {
           ),
           Flexible(
               child: CardSwiper(
+                isVerticalSwipingEnabled: false,
                 cards: pSquares_1,
               )
           ),

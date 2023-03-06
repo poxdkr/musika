@@ -18,7 +18,7 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends State<BottomBar> {
-
+  DateTime? currentBackPressTime;
   Future<void> getUserInfo() async {
 
     if(_auth.currentUser != null) {
@@ -50,7 +50,33 @@ class _BottomBarState extends State<BottomBar> {
 
   @override
   Widget build(BuildContext context) {
-      return Container(
+      return WillPopScope(
+          onWillPop: () async {
+
+
+        final backButtonPressTime = DateTime.now();
+
+        if (currentBackPressTime == null ||
+            backButtonPressTime.difference(currentBackPressTime!) >
+                Duration(seconds: 2)) {
+          currentBackPressTime = backButtonPressTime;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              duration: Duration(seconds: 1),
+              backgroundColor: Colors.redAccent.withOpacity(0.5),
+              content: Text('한 번 더 누르면 앱이 종료됩니다.',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+              ),
+              ),
+            ),
+          );
+          return false;
+        }
+        return true;
+      },
+    child:Container(
         color: Colors.black,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -62,6 +88,7 @@ class _BottomBarState extends State<BottomBar> {
             ),
           ),
         ),
+      )
       );
   }
 }
