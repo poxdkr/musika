@@ -94,7 +94,10 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Stack(
             children: [
               Positioned(
+                left: 0,
+                right: 0,
                 child: Image.network(
+
                 paint.p_file,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) {
@@ -112,9 +115,8 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
               ),
               Positioned(
-                left:0,
-                right:0,
-                bottom: 0,
+                left:5,
+                top: 5,
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
@@ -124,12 +126,12 @@ class _SearchScreenState extends State<SearchScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Container(
-                          padding : EdgeInsets.all(3),
+                          padding : EdgeInsets.all(1),
                           child: Row(
                               children : [
-                                Icon(Icons.favorite,size: 15),
+                                Icon(Icons.favorite,size: 12),
                                 SizedBox(width: 10),
-                                Text(paint.like_cnt.toString(),style: TextStyle(fontSize: 13),)
+                                Text(paint.like_cnt.toString(),style: TextStyle(fontSize: 12),)
                               ]
                           )
                       ),

@@ -1,9 +1,6 @@
 import 'dart:math';
-
-import 'package:Ai_pict/screen/search_screen.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:Ai_pict/model/comment_model.dart';
 import 'dart:ui';
 import 'dart:async';
@@ -20,6 +17,14 @@ FirebaseAuth _auth = FirebaseAuth.instance;
 String uid = "";
 bool isUser = false;
 String comment_txt = "";
+
+//권한요청 함수
+Future<void> _requestPermission() async {
+  final status = await Permission.storage.request();
+  if (status != PermissionStatus.granted) {
+    throw Exception('Permission denied');
+  }
+}
 
 class DetailScreen extends StatefulWidget {
   final int pindex;
@@ -114,7 +119,7 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
   Future<void> downloadFile(down_url) async {
     print('Download started');
     try {
-
+      //await _requestPermission();
       var time = DateTime.now().millisecondsSinceEpoch;
       var path = "/storage/emulated/0/Download/image-$time.jpg";
       var file = File(path);
@@ -381,7 +386,7 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                                           child:ElevatedButton(
                                             style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent,elevation: 0),
                                             onPressed: (){
-                                              if(!isUser){
+                                              /*if(!isUser){
                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                     SnackBar(
                                                       duration: Duration(milliseconds: 300),
@@ -396,7 +401,7 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                                                     )
                                                 );
                                                 return null;
-                                              }
+                                              }*/
                                               setState((){
                                                 like = !like;
 
@@ -445,7 +450,6 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                                               ),
                                             ),
                                           ),
-
                                       ),
                                       //다운로드 버튼
 
@@ -454,7 +458,7 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                                          child : ElevatedButton(
                                           style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent,elevation: 0),
                                           onPressed: (){
-                                            if(!isUser){
+                                            /*if(!isUser){
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                   SnackBar(
                                                     duration: Duration(milliseconds: 700),
@@ -469,7 +473,7 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                                                   )
                                               );
                                               return null;
-                                            }
+                                            }*/
                                             //이미지 다운로드 시작
                                             downloadFile(widget.paint.p_file);
                                             ScaffoldMessenger.of(context).showSnackBar(
