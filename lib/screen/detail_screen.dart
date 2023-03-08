@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:Ai_pict/model/comment_model.dart';
 import 'dart:ui';
@@ -10,6 +11,7 @@ import 'package:Ai_pict/model/paint_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
+import 'package:share/share.dart';
 
 
 FirebaseFirestore fstore = FirebaseFirestore.instance;
@@ -59,6 +61,17 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
   String _imagePath = "";
   bool _isLoading = false;
 
+  //공유하기
+  Future<void> share() async {
+    String address = widget.paint.p_file.replaceAll(' ', '_');
+    List<String> addrArr = address.split('image/');
+    String imageNo = addrArr[1];
+    await FlutterShare.share(
+      linkUrl:'http://lhg.happytester.co.kr/shareApp.php?image=$imageNo',
+      title: 'Sharing Ai_Pict App'
+    );
+  }
+
   //위치 애니메이션
   late double _dx;
   late double _dy;
@@ -81,11 +94,15 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
   }
 
   Future<void> likeEdit(like) async {
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('MM/dd HH:mm').format(now);
+
     if(like) {
       await fstore.collection('like').doc().set({
         // 필드와 값 추가
         'uid': uid,
-        'code': widget.paint.code
+        'code': widget.paint.code,
+        'regdate' : formattedDate
       });
     }else{
       var querySnapshot = await fstore.collection('like').where('uid',isEqualTo: uid).where('code',isEqualTo: widget.paint.code).get();
@@ -167,6 +184,8 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
   }
 
   Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot){
+
+
     List<Comment_m> comment = snapshot.map((m)=> Comment_m.fromSnapshot(m)).toList();
 
     List<Widget> commentResult = [];
@@ -499,8 +518,8 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                                         padding : EdgeInsets.fromLTRB(5, 10, 5, 10),
                                         child : ElevatedButton(
                                           style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent,elevation: 0),
-                                          onPressed: (){
-                                              ScaffoldMessenger.of(context).showSnackBar(
+                                          onPressed: share,
+                                              /*ScaffoldMessenger.of(context).showSnackBar(
                                                   SnackBar(
                                                     duration: Duration(milliseconds: 500),
                                                     content: Text(
@@ -513,9 +532,8 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                                                     backgroundColor: Colors.redAccent.shade200,
                                                   )
                                               );
-                                              return null;
+                                              return null;*/
 
-                                          },
                                           child: Icon(Icons.share),
                                         ),
                                       ),

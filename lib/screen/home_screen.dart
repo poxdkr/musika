@@ -46,7 +46,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot){
-    List<Paint_m> paints = snapshot.map((m)=> Paint_m.fromSnapshot(m)).toList();
+    List<Paint_m> paints = [];
+    List<Paint_m> paints_temp = snapshot.map((m)=> Paint_m.fromSnapshot(m)).toList();
+    for(Paint_m p in paints_temp){
+      if(p.isA == false){
+        paints.add(p);
+      }
+    }
     return SingleChildScrollView(
       child: Column(
           children: [

@@ -58,9 +58,11 @@ class _SearchScreenState extends State<SearchScreen> {
     plist =[];
     for(DocumentSnapshot d in snapshot){
       if(d.data().toString().toLowerCase().contains(_searchText)){
-        searchResult.add(d);
         final p_one = Paint_m.fromSnapshot(d);
-        plist.add(p_one);
+        if(p_one.isA == false) {
+          searchResult.add(d);
+          plist.add(p_one);
+        }
       }
     }
 
@@ -96,23 +98,32 @@ class _SearchScreenState extends State<SearchScreen> {
               Positioned(
                 left: 0,
                 right: 0,
-                child: Image.network(
-
-                paint.p_file,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) {
-                    return child;
-                  }
-                  return Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent.withOpacity(0.5)),
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                          : null,
-                    ),
-                  );
-                },
+                top:0,
+                bottom:0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(
+                      color: Colors.white10,
+                    )
+                  ),
+                  child: Image.network(
+                  paint.p_file,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    }
+                    return Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent.withOpacity(0.5)),
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    );
+                  },
             ),
+                ),
               ),
               Positioned(
                 left:5,
@@ -120,7 +131,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    color : Colors.redAccent.withOpacity(0.5),
+                    color : Colors.redAccent.withOpacity(0.2),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,

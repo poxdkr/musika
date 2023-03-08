@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:Ai_pict/screen/home_screen.dart';
 import 'package:Ai_pict/screen/login_screen.dart';
 import 'package:Ai_pict/screen/more_screen.dart';
@@ -67,6 +68,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 Future<String?> getUserToken() async {
+  DateTime now = DateTime.now();
+  DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+  String nowTime = formatter.format(now);
+
   var fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "BNZniSDCR04atJgpU2IzjfejWr6Ydwwd5ZXFabwpMtDz9djwdAcGyw_iM_hP3xHdcE2l6Do1KIfb9vdpP7TVGGw");
   //print('fcmToken :: $fcmToken');
 
@@ -79,7 +84,7 @@ Future<String?> getUserToken() async {
     print('해당 사용자 토큰이 존재하지 않습니다.');
 
     FirebaseFirestore.instance.collection('tokens').doc().set(
-      { 'token' : fcmToken }
+      { 'token' : fcmToken , 'regdate' : nowTime}
     );
     print('새로운 이용자의 토큰이 등록되었습니다.');
   }

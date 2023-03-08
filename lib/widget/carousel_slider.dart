@@ -42,7 +42,11 @@ class _CarouselImageState extends State<CarouselImage> {
         Container square = Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Colors.transparent
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(5),
+            border: Border.all(
+              color: Colors.white60
+            )
           ),
           child: InkWell(
             onTap: () {
