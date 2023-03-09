@@ -69,8 +69,9 @@ class _MoreScreenState extends State<MoreScreen> {
             children: [
               Container(
                 padding : EdgeInsets.only(top:10),
-                child: CircleAvatar(radius: 100, backgroundImage: AssetImage('image/musika_icon.png'),),
+                child: CircleAvatar(radius: 100, backgroundImage: AssetImage('image/icon_512.png'),),
               ),
+              SizedBox(height:30),
               Container(
                 padding : EdgeInsets.only(top:15,bottom: 10),
                 child: Text(

@@ -28,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('paint')
                                         .orderBy('regdate', descending: true)
-                                        .limit(20)
                                         .snapshots(),
       builder: (context, snapshot){
         if(!snapshot.hasData){
@@ -46,20 +45,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot){
-    List<Paint_m> paints = [];
-    List<Paint_m> paints_temp = snapshot.map((m)=> Paint_m.fromSnapshot(m)).toList();
-    for(Paint_m p in paints_temp){
+    List<Paint_m> paints = snapshot.map((m)=> Paint_m.fromSnapshot(m)).toList();
+    List<Paint_m> paints_result=[];
+    for(Paint_m p in paints){
       if(p.isA == false){
-        paints.add(p);
+        paints_result.add(p);
       }
     }
     return SingleChildScrollView(
       child: Column(
           children: [
             TopBar(),
-            CarouselImage(paints: paints),
+            CarouselImage(paints: paints_result),
             SizedBox(height:10),
-            RecentlySlider(paints: paints)
+            RecentlySlider(paints: paints_result)
           ],
       ),
     );

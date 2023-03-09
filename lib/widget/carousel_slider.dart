@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:Ai_pict/model/paint_model.dart';
@@ -60,23 +61,13 @@ class _CarouselImageState extends State<CarouselImage> {
               );
             },
             child: Container(
-              child: Image.network(
-                paints![i].p_file,
+              child:  CachedNetworkImage( // Image.network
+                imageUrl: paints![i].p_file,
+                placeholder: (context, url) => const LinearProgressIndicator(color: Colors.redAccent,),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                fadeOutDuration: const Duration(seconds: 1),
+                fadeInDuration: const Duration(seconds: 2),
                 fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null)
-                    return child;
-                  return Center(
-                    child: CircularProgressIndicator(
-                      valueColor: new AlwaysStoppedAnimation<Color>(
-                          Colors.redAccent.withOpacity(0.5)),
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
-                          : null,
-                    ),
-                  );
-                },
               ),
             ),
           ),

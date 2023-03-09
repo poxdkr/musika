@@ -211,7 +211,7 @@ class _MyAppState extends State<MyApp> {
             children: [
               Image.asset('image/icon.png', width: 100, height: 120,),
               SizedBox(height:10),
-              Text('Ai_Pict',
+              /*Text('Ai_Pict',
                 style : TextStyle(
                     color : Colors.white,
                     fontSize: 30,
@@ -222,8 +222,7 @@ class _MyAppState extends State<MyApp> {
                       offset: Offset(0,1),
                     )]
                 ),
-
-              )
+              )*/
             ],
           ),
         ),

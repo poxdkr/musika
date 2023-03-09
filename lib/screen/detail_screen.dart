@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -311,7 +312,7 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                           Container(width: double.maxFinite,
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image:NetworkImage(widget.paint.p_file),
+                                  image:CachedNetworkImageProvider(widget.paint.p_file,),
                                   fit: BoxFit.cover
                               ),
                             ),
@@ -328,7 +329,12 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                                             padding : EdgeInsets.fromLTRB(0, 60, 0, 10),
                                         child :Stack(
                                               children: [
-                                                Image.network(widget.paint.p_file,
+                                                CachedNetworkImage( // Image.network
+                                                    imageUrl: widget.paint.p_file,
+                                                    placeholder: (context, url) => const LinearProgressIndicator(color: Colors.redAccent,),
+                                                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                                                    fadeOutDuration: const Duration(seconds: 1),
+                                                    fadeInDuration: const Duration(seconds: 2),
                                                     fit: BoxFit.fitWidth),
                                                 Positioned(
                                                   bottom: 5,

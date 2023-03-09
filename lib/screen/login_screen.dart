@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       image : DecorationImage(
                           image: AssetImage('image/main.png'),
                           fit : BoxFit.cover,
-                          opacity: 0.3,
+                          opacity: 0.1,
                           filterQuality: FilterQuality.low
                       ),
                     color: Colors.white60

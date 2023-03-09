@@ -1,6 +1,7 @@
 
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                         .snapshots(),
       builder: (context, snapshot){
         if(!snapshot.hasData){
-          return CircularProgressIndicator();
+          return CircularProgressIndicator(color: Colors.redAccent.withOpacity(0.5),strokeWidth: 10,);
         }else{
           return _buildList(context, snapshot.data!.docs);
         }
@@ -70,8 +71,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return Expanded(
         child: GridView.count(
-            crossAxisCount: 3,
-            childAspectRatio: 1 / 1.5,
+            crossAxisCount: 2,
+            childAspectRatio: 1 / 1.7,
             padding: EdgeInsets.all(5),
             children: /*searchResult
                 .map((data) => _buildListItem(context ,data))
@@ -105,11 +106,21 @@ class _SearchScreenState extends State<SearchScreen> {
                     borderRadius: BorderRadius.circular(5),
                     border: Border.all(
                       color: Colors.white10,
+                    ),
+                    color: Colors.white38,
+                    gradient: LinearGradient(
+                      begin:Alignment.topLeft,
+                      end : Alignment.topRight,
+                      colors : [Colors.black, Colors.white.withOpacity(0.2)]
                     )
                   ),
-                  child: Image.network(
-                  paint.p_file,
-                  loadingBuilder: (context, child, loadingProgress) {
+                  child: CachedNetworkImage( // Image.network
+                    imageUrl: paint.p_file,
+                    placeholder: (context, url) => const LinearProgressIndicator(color: Colors.redAccent,),
+                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                    fadeOutDuration: const Duration(seconds: 1),
+                    fadeInDuration: const Duration(seconds: 2),
+                  /*loadingBuilder: (context, child, loadingProgress) {
                     if (loadingProgress == null) {
                       return child;
                     }
@@ -121,7 +132,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             : null,
                       ),
                     );
-                  },
+                  },*/
             ),
                 ),
               ),
@@ -129,9 +140,18 @@ class _SearchScreenState extends State<SearchScreen> {
                 left:5,
                 top: 5,
                 child: Container(
+                  padding : EdgeInsets.fromLTRB(4, 0, 4, 0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    color : Colors.redAccent.withOpacity(0.2),
+                    border: Border.all(
+                      color: Colors.white10,
+                    ),
+                    gradient: LinearGradient(
+                      colors: [Colors.redAccent.withOpacity(0.5), Colors.white.withOpacity(0.2)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -146,15 +166,6 @@ class _SearchScreenState extends State<SearchScreen> {
                               ]
                           )
                       ),
-                      /*Container(
-                          padding : EdgeInsets.all(5),
-                          child: Row(
-                              children : [
-                                Icon(Icons.comment),
-                                Text('11')
-                              ]
-                          )
-                      ),*/
                     ],
                   ),
                 ),
@@ -186,58 +197,62 @@ class _SearchScreenState extends State<SearchScreen> {
           //검색창 일체
           Container(
             color : Colors.black,
-            padding : EdgeInsets.fromLTRB(5, 10, 5, 10),
+            padding : EdgeInsets.fromLTRB(5, 5, 5, 5),
             child: Row(
               children: [
                 //검색창
                 Expanded(
                     flex : 6,
-                    child: TextField(
-                      onChanged: (text){
-                        setState(() {
-                          _searchText = text;
-                        });
-                      },
-                      focusNode: focusNode,
-                      style : TextStyle(
-                        fontSize: 15,
-                      ),
-                      //autofocus: true,
-                      controller: _controller,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white12,
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Colors.white60,
-                          size: 20,
+                    child: Container(
+                      height: 40,
+                      child: TextField(
+
+                        onChanged: (text){
+                          setState(() {
+                            _searchText = text;
+                          });
+                        },
+                        focusNode: focusNode,
+                        style : TextStyle(
+                          fontSize: 11,
                         ),
-                        // (x) 버튼
-                        suffixIcon: focusNode.hasFocus
-                            ? IconButton(
-                          icon: Icon(Icons.cancel, size: 20, color: Colors.white60,),
-                          onPressed: (){
-                            setState( (){
-                              _controller.clear();
-                              _searchText = "";
-                            }
-                            );
-                          },
-                        )
-                            : Container(),
-                        hintText: '검색',
-                        //border Style
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.transparent),
-                          borderRadius:  BorderRadius.all(Radius.circular(10)),
-                        ),
-                        enabledBorder:OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.transparent),
-                          borderRadius:  BorderRadius.all(Radius.circular(10)),
-                        ),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.transparent),
-                          borderRadius:  BorderRadius.all(Radius.circular(10)),
+                        //autofocus: true,
+                        controller: _controller,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white12,
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.white60,
+                            size: 15,
+                          ),
+                          // (x) 버튼
+                          suffixIcon: focusNode.hasFocus
+                              ? IconButton(
+                            icon: Icon(Icons.cancel, size: 15, color: Colors.white60,),
+                            onPressed: (){
+                              setState( (){
+                                _controller.clear();
+                                _searchText = "";
+                              }
+                              );
+                            },
+                          )
+                              : Container(),
+                          hintText: '검색',
+                          //border Style
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
+                            borderRadius:  BorderRadius.all(Radius.circular(10)),
+                          ),
+                          enabledBorder:OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
+                            borderRadius:  BorderRadius.all(Radius.circular(10)),
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
+                            borderRadius:  BorderRadius.all(Radius.circular(10)),
+                          ),
                         ),
                       ),
                     )
@@ -261,10 +276,10 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
           //Sorted Box
           Container(
-            padding : EdgeInsets.all(10),
+            padding : EdgeInsets.all(0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  SizedBox(width : 10),
                   ElevatedButton(
                       onPressed: (){
                         setState(() {
@@ -272,12 +287,17 @@ class _SearchScreenState extends State<SearchScreen> {
                           isDesc = true;
                         });
                       },
-                      child: Text('등록일 ▽', style: TextStyle(color: Colors.white),),
+                      child: Icon(Icons.calendar_month,
+                        color: sst == 'regdate' ? Colors.redAccent.shade400 : Colors.white,
+                        ),
                       style: TextButton.styleFrom(
+                          fixedSize: Size(40, 20),
                           primary: Colors.redAccent.shade400,
                           backgroundColor: Colors.transparent,
-                          shadowColor: Colors.white,
-                          elevation: 1)
+                          shadowColor: Colors.redAccent,
+                          elevation: sst == 'regdate' ? 1 : 0,
+                          padding: EdgeInsets.all(0)
+                      )
                   ),
                   SizedBox(width : 10),
                   ElevatedButton(
@@ -287,12 +307,17 @@ class _SearchScreenState extends State<SearchScreen> {
                           isDesc = true;
                         });
                       },
-                      child: Text('좋아요 ▽', style: TextStyle(color: Colors.white),),
+                      child: Icon(Icons.favorite,
+                          color: sst == 'like_cnt' ? Colors.redAccent.shade400 : Colors.white,
+                      ),
                       style: TextButton.styleFrom(
+                          fixedSize: Size(40, 20),
                           primary: Colors.redAccent.shade400,
                           backgroundColor: Colors.transparent,
-                          shadowColor: Colors.white,
-                          elevation: 1)
+                          shadowColor: Colors.redAccent,
+                          elevation: sst == 'like_cnt' ? 1:0,
+                          padding: EdgeInsets.all(0)
+                      )
                   ),
                   SizedBox(width : 10),
                   ElevatedButton(
@@ -303,12 +328,18 @@ class _SearchScreenState extends State<SearchScreen> {
                           isDesc = random.nextBool();
                         });
                       },
-                      child: Icon(Icons.shuffle, color : Colors.white),
+                      child: Icon(Icons.shuffle,
+                          size: 20,
+                          color : sst == 'code' ? Colors.redAccent.shade400 : Colors.white,
+                      ),
                       style: TextButton.styleFrom(
+                          fixedSize: Size(40, 20),
                           primary: Colors.redAccent.shade400,
                           backgroundColor: Colors.transparent,
-                          shadowColor: Colors.white,
-                          elevation: 1)
+                          shadowColor: Colors.redAccent,
+                          elevation: sst == 'code' ? 1 : 0,
+                          padding: EdgeInsets.all(0)
+                      )
                   ),
                 ],
               ),
