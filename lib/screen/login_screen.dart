@@ -10,7 +10,11 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin{
+
+  //배경 애니메이션
+  late AnimationController _controller;
+  late Animation<double> _animation;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -38,6 +42,23 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _animation = Tween<double>(
+      begin: 1.0,
+      end: 0.0,
+    ).animate(_controller);
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,69 +78,82 @@ class _LoginScreenState extends State<LoginScreen> {
                 top: 0,
                 right :0,
                 left : 0,
-                child: Container(
-                  decoration : BoxDecoration(
-                      image : DecorationImage(
-                          image: AssetImage('image/main.png'),
-                          fit : BoxFit.cover,
-                          opacity: 0.1,
-                          filterQuality: FilterQuality.low
-                      ),
-                    color: Colors.white60
-                  ),
-                  padding : EdgeInsets.only(top:90,left:20),
-                  height : MediaQuery.of(context).size.height,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RichText(
-                          text: TextSpan(
-                              text : 'Welcome',
-                              style : TextStyle(
-                                  letterSpacing: 1.0,
-                                  fontSize: 25,
-                                  color : Colors.white,
-                                  shadows: [Shadow(
-                                    offset: Offset(1,1),
-                                    blurRadius: 2,
-                                    color: Colors.white60,
-                                  )]
-                              ),
-                              children: [
-                                TextSpan(
-                                    text : isSignupScreen ? ' to Ai_pict' : ' Ai_pict Back!',
-                                    style : TextStyle(
+                child: AnimatedBuilder(
+                    animation: _animation,
+                    builder: (BuildContext context, Widget? child) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          image :DecorationImage(
+                            opacity: 0.3,
+                            image: AssetImage('image/image2.jpg'),
+                            fit : BoxFit.cover
+                          )
+                        ),
+                        padding: EdgeInsets.only(top: 90, left: 20),
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                                text: TextSpan(
+                                    text: 'Welcome',
+                                    style: TextStyle(
                                         letterSpacing: 1.0,
                                         fontSize: 25,
-                                        color : Colors.white,
-                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
                                         shadows: [Shadow(
-                                          offset: Offset(1,1),
+                                          offset: Offset(1, 1),
                                           blurRadius: 2,
                                           color: Colors.white60,
-                                        )]
-                                    )
+                                        )
+                                        ]
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                          text: isSignupScreen
+                                              ? ' to Ai_pict'
+                                              : ' Ai_pict Back!',
+                                          style: TextStyle(
+                                              letterSpacing: 1.0,
+                                              fontSize: 25,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              shadows: [Shadow(
+                                                offset: Offset(1, 1),
+                                                blurRadius: 2,
+                                                color: Colors.white60,
+                                              )
+                                              ]
+                                          )
+                                      )
+                                    ]
                                 )
-                              ]
-                          )
-                      ),
-                      SizedBox(height:8),
-                      Text(
-                          isSignupScreen ? 'Sign up to continue' : 'sign in to continue',
-                          style : TextStyle(
-                              letterSpacing: 1.0,
-                              fontSize: 12,
-                              color : Colors.white,
-                              shadows: [Shadow(
-                                offset: Offset(1,1),
-                                blurRadius: 2,
-                                color: Colors.white60,
-                              )]
-                          )
-                      )
-                    ],
-                  ),
-                )
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                                isSignupScreen
+                                    ? 'Sign up to continue'
+                                    : 'sign in to continue',
+                                style: TextStyle(
+                                    letterSpacing: 1.0,
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                    shadows: [Shadow(
+                                      offset: Offset(1, 1),
+                                      blurRadius: 2,
+                                      color: Colors.white60,
+                                    )
+                                    ]
+                                )
+                            )
+                          ],
+                        ),
+                      );
+                    }
+                ),
             ),
             //텍스트 폼 포지션
             AnimatedPositioned(
@@ -153,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Column(
                                   children: [
                                     TextButton(
-                                        child: Text('Login', style: TextStyle(fontSize: 18, color : isSignupScreen ? Colors.grey : Colors.redAccent.shade700,)),
+                                        child: Text('Login', style: TextStyle(fontSize: 18, color : isSignupScreen ? Colors.black54 : Colors.redAccent.shade700,)),
                                         onPressed: (){
                                           setState(() {
                                             isSignupScreen = false;
@@ -172,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Column(
                                 children: [
                                   TextButton(
-                                    child: Text('Sign up', style: TextStyle(fontSize: 18, color : !isSignupScreen ? Colors.grey : Colors.redAccent.shade700,)),
+                                    child: Text('Sign up', style: TextStyle(fontSize: 18, color : !isSignupScreen ? Colors.black54 : Colors.redAccent.shade700,)),
                                     onPressed: (){
                                       setState(() {
                                         isSignupScreen = true;

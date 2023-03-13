@@ -1,3 +1,4 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,6 +20,25 @@ FirebaseAuth _auth = FirebaseAuth.instance;
 String uid = "";
 String username = "";
 String userToken="";
+
+String unitId = 'ca-app-pub-2124338818654953/4064980277'; //실제 광고 ID
+String testUnitId = 'ca-app-pub-3940256099942544/1033173712'; //테스트 유닛 ID
+
+
+void showInterstitialAd() {
+  print('!!!!!!!!!!!!!!!!!');
+  AdmobInterstitial? interstitialAd;
+
+  interstitialAd = AdmobInterstitial(
+    adUnitId: AdmobInterstitial.testAdUnitId,
+    listener: (AdmobAdEvent event, Map<String, dynamic>? args) {
+      if (event == AdmobAdEvent.closed) interstitialAd!.load();
+    },
+  );
+
+  interstitialAd.load();
+  interstitialAd.show();
+}
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -92,8 +112,11 @@ Future<String?> getUserToken() async {
 }
 
 Future<void> main() async {
+
   //FlutterBinding 초기화
   WidgetsFlutterBinding.ensureInitialized();
+  Admob.initialize();
+  //showInterstitialAd();
   //FireBase초기화
   await Firebase.initializeApp();
 
@@ -163,6 +186,7 @@ class _MyAppState extends State<MyApp> {
       uid = _auth.currentUser!.uid;
       getUserInfo();
     }
+
     //유저의 토큰등록 여부를 판단후 없으면 등록
     super.initState();
     getUserToken();
@@ -247,6 +271,9 @@ class _MyAppState extends State<MyApp> {
 }
 
 Widget TabControl_pad(){
+
+  print('unitId :: $unitId');
+  print('testUnitId :: $testUnitId');
 
   List<Widget> tabs = [];
   List<Widget> tabViewList = [];

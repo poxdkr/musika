@@ -3,6 +3,8 @@ class Assets {
   Assets._();
 
   static const String imageIcon = 'image/icon.png';
+  static const String imageIcon512 = 'image/icon_512.png';
+  static const String imageKakaoTalk20230313142930864 = 'image/image2.jpg';
   static const String imageMain = 'image/main.png';
   static const String imageMainIcon = 'image/main_icon.png';
   static const String imageMusikaIcon = 'image/musika_icon.png';

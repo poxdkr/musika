@@ -10,6 +10,8 @@ import 'package:Ai_pict/screen/detail_screen.dart';
 
 String sst = "regdate"; //기본 정렬 등록일자 내림순
 bool isDesc = true;
+bool isRandom = false;
+
 List<Paint_m> plist=[];
 
 class SearchScreen extends StatefulWidget {
@@ -19,6 +21,8 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -47,7 +51,14 @@ class _SearchScreenState extends State<SearchScreen> {
         if(!snapshot.hasData){
           return CircularProgressIndicator(color: Colors.redAccent.withOpacity(0.5),strokeWidth: 10,);
         }else{
-          return _buildList(context, snapshot.data!.docs);
+          if(isRandom){
+            final docList = snapshot.data!.docs;
+            docList.shuffle(); // 리스트를 무작위로 섞음
+            return _buildList(context, docList);
+          }else{
+            return _buildList(context, snapshot.data!.docs);
+          }
+
         }
       } ,
     );
@@ -67,10 +78,9 @@ class _SearchScreenState extends State<SearchScreen> {
       }
     }
 
-    print(plist.length);
-
     return Expanded(
         child: GridView.count(
+            controller: _scrollController,
             crossAxisCount: 2,
             childAspectRatio: 1 / 1.7,
             padding: EdgeInsets.all(5),
@@ -84,7 +94,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 _buildListItem(context, data, index,searchResult)))
                 .values
                 .toList()
-        )
+        ),
     );
   }
 
@@ -189,9 +199,19 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
 
-
-    return Container(
-      child: Column(
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.redAccent.shade400.withOpacity(0.5),
+        child: Icon(Icons.arrow_upward, color: Colors.white, size:25,fill: 0.5),
+        onPressed: () {
+          _scrollController.animateTo(
+            0.0,
+            duration: Duration(milliseconds: 500),
+            curve: Curves.easeOut,
+          );
+        },
+      ),
+      body: Column(
         children: [
           Padding(padding:EdgeInsets.all(30)),
           //검색창 일체
@@ -285,6 +305,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         setState(() {
                           sst = "regdate";
                           isDesc = true;
+                          isRandom = false;
                         });
                       },
                       child: Icon(Icons.calendar_month,
@@ -305,6 +326,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         setState(() {
                           sst = "like_cnt";
                           isDesc = true;
+                          isRandom = false;
                         });
                       },
                       child: Icon(Icons.favorite,
@@ -324,8 +346,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       onPressed: () {
                         setState(() {
                           sst = "code";
-                          Random random =  Random();
-                          isDesc = random.nextBool();
+                          isRandom = true;
                         });
                       },
                       child: Icon(Icons.shuffle,

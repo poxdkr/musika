@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,6 +19,8 @@ import 'package:share/share.dart';
 FirebaseFirestore fstore = FirebaseFirestore.instance;
 FirebaseAuth _auth = FirebaseAuth.instance;
 String uid = "";
+var fcmToken = FirebaseMessaging.instance.getToken(vapidKey: "BNZniSDCR04atJgpU2IzjfejWr6Ydwwd5ZXFabwpMtDz9djwdAcGyw_iM_hP3xHdcE2l6Do1KIfb9vdpP7TVGGw");
+
 bool isUser = false;
 String comment_txt = "";
 
@@ -89,24 +92,27 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
     _dy = 0;
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1000),
+      duration: Duration(milliseconds: 500),
     );
     getlikeInfo();
   }
 
   Future<void> likeEdit(like) async {
+
+    var fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "BNZniSDCR04atJgpU2IzjfejWr6Ydwwd5ZXFabwpMtDz9djwdAcGyw_iM_hP3xHdcE2l6Do1KIfb9vdpP7TVGGw");
+
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('MM/dd HH:mm').format(now);
 
     if(like) {
       await fstore.collection('like').doc().set({
         // 필드와 값 추가
-        'uid': uid,
+        'uid': fcmToken,
         'code': widget.paint.code,
         'regdate' : formattedDate
       });
     }else{
-      var querySnapshot = await fstore.collection('like').where('uid',isEqualTo: uid).where('code',isEqualTo: widget.paint.code).get();
+      var querySnapshot = await fstore.collection('like').where('uid',isEqualTo: fcmToken).where('code',isEqualTo: widget.paint.code).get();
       querySnapshot.docs.forEach((doc) {
         doc.reference.delete()
             .then((value) =>
@@ -118,7 +124,8 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
   }
 
   Future<void> getlikeInfo() async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await fstore.collection('like').where('uid',isEqualTo: uid).where('code',isEqualTo: widget.paint.code).get();
+    var fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "BNZniSDCR04atJgpU2IzjfejWr6Ydwwd5ZXFabwpMtDz9djwdAcGyw_iM_hP3xHdcE2l6Do1KIfb9vdpP7TVGGw");
+    QuerySnapshot<Map<String, dynamic>> snapshot = await fstore.collection('like').where('uid',isEqualTo: fcmToken).where('code',isEqualTo: widget.paint.code).get();
     List<DocumentSnapshot<Map<String, dynamic>>> documents = snapshot.docs;
     // 문서 데이터와 문서 ID 출력 예제
     for (final DocumentSnapshot<Map<String, dynamic>> document in documents) {
@@ -334,7 +341,7 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                                                     placeholder: (context, url) => const LinearProgressIndicator(color: Colors.redAccent,),
                                                     errorWidget: (context, url, error) => const Icon(Icons.error),
                                                     fadeOutDuration: const Duration(seconds: 1),
-                                                    fadeInDuration: const Duration(seconds: 2),
+                                                    fadeInDuration: const Duration(seconds: 1),
                                                     fit: BoxFit.fitWidth),
                                                 Positioned(
                                                   bottom: 5,
@@ -411,33 +418,26 @@ class _DetailScreenState extends State<DetailScreen> with TickerProviderStateMix
                                           child:ElevatedButton(
                                             style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent,elevation: 0),
                                             onPressed: (){
-                                              /*if(!isUser){
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                    SnackBar(
-                                                      duration: Duration(milliseconds: 300),
-                                                      content: Text(
-                                                        '좋아요는 로그인이 필요합니다',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight: FontWeight.bold
-                                                        ),
-                                                      ),
-                                                      backgroundColor: Colors.redAccent.shade200,
-                                                    )
-                                                );
-                                                return null;
-                                              }*/
+
                                               setState((){
+                                                //현재 like 상태의 반대
                                                 like = !like;
 
                                                 if(like) {
                                                   like_cnt++;
+                                                  //현재 객체의 like_cnt와 현재 리스트객체의 pindex번째 객체의 like_cnt를 변경
+                                                  widget.paint.like_cnt = like_cnt;
+                                                  widget.paints[widget.pindex].like_cnt =like_cnt;
                                                   widget.paint.reference.update(
                                                       {"like_cnt" : like_cnt}
                                                   );
                                                   likeEdit(like);
+
                                                 }else{
                                                   like_cnt--;
+                                                  //현재 객체의 like_cnt와 현재 리스트객체의 pindex번째 객체의 like_cnt를 변경
+                                                  widget.paint.like_cnt = like_cnt;
+                                                  widget.paints[widget.pindex].like_cnt =like_cnt;
                                                   widget.paint.reference.update(
                                                       {"like_cnt" : like_cnt}
                                                   );

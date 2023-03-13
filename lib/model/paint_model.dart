@@ -6,7 +6,7 @@ class Paint_m {
   final bool isA;
   final String hashtag;
   final String p_file;
-  final int like_cnt;
+  int like_cnt;
   final String regdate;
   final DocumentReference reference;
 
